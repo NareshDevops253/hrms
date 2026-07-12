@@ -1,6 +1,6 @@
 import mysql.connector
 
-try:
+def get_connection():
     connection = mysql.connector.connect(
         host="127.0.0.1",
         user="root",
@@ -8,8 +8,4 @@ try:
         database="hrms"
     )
 
-    if connection.is_connected():
-        print("Database Connected Successfully!")
-
-except mysql.connector.Error as err:
-    print("Error:", err)
+    return connection
