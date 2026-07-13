@@ -1,0 +1,11 @@
+{
+  "message": "Login Successful",
+  "user": {
+    "full_name": "Naresh",
+    "id": 1,
+    "password": "admin123",
+    "role": "Admin",
+    "status": "Active",
+    "username": "admin"
+  }
+}
