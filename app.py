@@ -155,6 +155,7 @@ def create_resource():
     email = str(data.get('email', '')).strip()
     phone = str(data.get('phone', '')).strip()
     designation = str(data.get('designation', '')).strip()
+    resource_type = str(data.get('resource_type', '')).strip()
     company_id = data.get('company_id')
     status = str(data.get('status', '')).strip()
 
@@ -176,6 +177,8 @@ def create_resource():
 
     if designation == "":
         return jsonify({"message": "Designation is required"}), 400
+    if resource_type == "":
+        return jsonify({"message": "Please select a resource type"}), 400
 
     if not company_id:
         return jsonify({"message": "Please select a company"}), 400
@@ -195,12 +198,13 @@ def create_resource():
         email,
         phone,
         designation,
+        resource_type,
         company_id,
         status
     )
     VALUES
     (
-        %s,%s,%s,%s,%s,%s,%s,%s
+        %s,%s,%s,%s,%s,%s,%s,%s,%s
     )
     """
 
@@ -211,6 +215,7 @@ def create_resource():
         email,
         phone,
         designation,
+        resource_type,
         company_id,
         status
     ))
@@ -238,6 +243,7 @@ def get_resource():
         r.email,
         r.phone,
         r.designation,
+        r.resource_type,
         r.status,
         c.company_name
     FROM resource r
@@ -264,6 +270,7 @@ def update_resource(id):
     email = data['email']
     phone = data['phone']
     designation = data['designation']
+    resource_type = str(data.get('resource_type', '')).strip()
     company_id = data['company_id']
     status = data['status']
 
@@ -278,6 +285,7 @@ def update_resource(id):
         email=%s,
         phone=%s,
         designation=%s,
+        resource_type=%s,
         company_id=%s,
         status=%s
     WHERE resource_id=%s
@@ -290,6 +298,7 @@ def update_resource(id):
         email,
         phone,
         designation,
+        resource_type,
         company_id,
         status,
         id
@@ -319,6 +328,115 @@ def delete_resource(id):
 
     return jsonify({"message": "Resource Deleted Successfully"})
 
+@app.route('/client_msa', methods=['POST'])
+def post_client_msa():
+
+    data = request.get_json()
+
+    client_name = data['client_name']
+    msa_number = data['msa_number']
+    start_date = data['start_date']
+    end_date = data['end_date']
+    status = data['status']
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+    INSERT INTO client_msa
+    (client_name, msa_number, start_date, end_date, status)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+
+    values = (
+        client_name,
+        msa_number,
+        start_date,
+        end_date,
+        status
+    )
+
+    cursor.execute(query, values)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"message": "Client MSA Created Successfully"})
+@app.route('/client_msa', methods=['GET'])
+def get_client_msa():
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = "SELECT * FROM client_msa"
+
+    cursor.execute(query)
+    client_msa = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(client_msa)
+
+@app.route('/client_msa/<int:id>', methods=['PUT'])
+def update_client_msa(id):
+
+    data = request.get_json(force=True)
+
+    client_name = data['client_name']
+    msa_number = data['msa_number']
+    start_date = data['start_date']
+    end_date = data['end_date']
+    status = data['status']
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+    UPDATE client_msa
+    SET
+        client_name = %s,
+        msa_number = %s,
+        start_date = %s,
+        end_date = %s,
+        status = %s
+    WHERE id = %s
+    """
+
+    values = (
+        client_name,
+        msa_number,
+        start_date,
+        end_date,
+        status,
+        id
+    )
+
+    cursor.execute(query, values)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"message": "Client MSA Updated Successfully"})
+
+@app.route('/client_msa/<int:id>', methods=['DELETE'])
+def delete_client_msa(id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "DELETE FROM client_msa WHERE client_msa_id=%s"
+
+    cursor.execute(query, (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"message": "Client MSA Deleted Successfully"})
+
 @app.route("/companypage")
 def company_page():
     return render_template("company.html")
@@ -328,6 +446,8 @@ def login_page():
 @app.route("/resourcepage")
 def resource_page():
     return render_template("resource.html")
-
+@app.route('/client_msa_page')
+def client_msa_page():
+    return render_template('client_msa.html')
 if __name__ == "__main__":
     app.run(debug=True)
