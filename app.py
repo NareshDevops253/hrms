@@ -155,6 +155,7 @@ def create_resource():
     email = str(data.get('email', '')).strip()
     phone = str(data.get('phone', '')).strip()
     designation = str(data.get('designation', '')).strip()
+    company_name= str(data.get('company_name', '')).strip()
     resource_type = str(data.get('resource_type', '')).strip()
     company_id = data.get('company_id')
     status = str(data.get('status', '')).strip()
@@ -177,6 +178,8 @@ def create_resource():
 
     if designation == "":
         return jsonify({"message": "Designation is required"}), 400
+    if company_name == "":
+        return jsonify({"message": "Company Name is required"}), 400
     if resource_type == "":
         return jsonify({"message": "Please select a resource type"}), 400
 
@@ -198,13 +201,14 @@ def create_resource():
         email,
         phone,
         designation,
+        company_name,
         resource_type,
         company_id,
         status
     )
     VALUES
     (
-        %s,%s,%s,%s,%s,%s,%s,%s,%s
+        %s,%s,%s,%s,%s,%s,%s,%s,%s,%s
     )
     """
 
@@ -215,6 +219,7 @@ def create_resource():
         email,
         phone,
         designation,
+        company_name,
         resource_type,
         company_id,
         status
@@ -243,6 +248,7 @@ def get_resource():
         r.email,
         r.phone,
         r.designation,
+        c.company_name,
         r.resource_type,
         r.status,
         c.company_name
@@ -270,6 +276,7 @@ def update_resource(id):
     email = data['email']
     phone = data['phone']
     designation = data['designation']
+    company_name= str(data.get('company_name', '')).strip()
     resource_type = str(data.get('resource_type', '')).strip()
     company_id = data['company_id']
     status = data['status']
@@ -285,6 +292,7 @@ def update_resource(id):
         email=%s,
         phone=%s,
         designation=%s,
+        company_name=%s,
         resource_type=%s,
         company_id=%s,
         status=%s
@@ -298,6 +306,7 @@ def update_resource(id):
         email,
         phone,
         designation,
+        company_name,
         resource_type,
         company_id,
         status,
@@ -327,6 +336,31 @@ def delete_resource(id):
     conn.close()
 
     return jsonify({"message": "Resource Deleted Successfully"})
+
+@app.route('/resource_details/<company_name>/<first_name>', methods=['GET'])
+def get_resource_details(company_name, first_name):
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+    SELECT
+        company_name,
+        resource_type
+    FROM resource
+    WHERE company_name=%s
+    AND first_name=%s
+    """
+
+    cursor.execute(query, (company_name, first_name))
+
+    resource = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(resource)
+
 
 @app.route('/client_msa', methods=['POST'])
 def post_client_msa():
@@ -437,17 +471,236 @@ def delete_client_msa(id):
 
     return jsonify({"message": "Client MSA Deleted Successfully"})
 
+@app.route('/client_work_order', methods=['POST'])
+def create_client_work_order():
+
+    data = request.get_json()
+
+    print("Received Data:", data)
+
+
+    client_msa_id = data['client_msa_id']
+    work_order_number = data['work_order_number']
+    project_name = data['project_name']
+
+    company_name = data.get('company_name')
+    resource_name = data.get('resource_name')
+
+    resource_type = data['resource_type']
+    start_date = data['start_date']
+    end_date = data['end_date']
+    status = data['status']
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    query = """
+    INSERT INTO client_work_order
+    (
+        client_msa_id,
+        work_order_number,
+        project_name,
+        company_name,
+        resource_name,
+        resource_type,
+        start_date,
+        end_date,
+        status
+    )
+    VALUES
+    (
+        %s,%s,%s,%s,%s,%s,%s,%s,%s
+    )
+    """
+
+
+    values = (
+
+        client_msa_id,
+        work_order_number,
+        project_name,
+        company_name,
+        resource_name,
+        resource_type,
+        start_date,
+        end_date,
+        status
+
+    )
+
+
+    cursor.execute(query,values)
+
+    conn.commit()
+
+
+    cursor.close()
+    conn.close()
+
+
+    return jsonify({
+        "message":"Client Work Order Created Successfully"
+    })
+
+
+@app.route('/client_work_order', methods=['GET'])
+def get_client_work_order():
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+    SELECT
+        cwo.id,
+        cwo.work_order_number,
+        cwo.project_name,
+        cwo.resource_type,
+        cwo.start_date,
+        cwo.end_date,
+        cwo.status,
+        cm.client_name,
+        cm.msa_number
+    FROM client_work_order cwo
+    JOIN client_msa cm
+    ON cwo.client_msa_id = cm.id
+    """
+
+    cursor.execute(query)
+
+    work_orders = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(work_orders)
+
+@app.route('/client_work_order/<int:id>', methods=['PUT'])
+def update_client_work_order(id):
+
+    data = request.get_json()
+
+    client_msa_id = data['client_msa_id']
+    work_order_number = data['work_order_number']
+    project_name = data['project_name']
+    resource_type = data['resource_type']
+    start_date = data['start_date']
+    end_date = data['end_date']
+    status = data['status']
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+    UPDATE client_work_order
+    SET
+        client_msa_id=%s,
+        work_order_number=%s,
+        project_name=%s,
+        resource_type=%s,
+        start_date=%s,
+        end_date=%s,
+        status=%s
+    WHERE id=%s
+    """
+
+    values = (
+        client_msa_id,
+        work_order_number,
+        project_name,
+        resource_type,
+        start_date,
+        end_date,
+        status,
+        id
+    )
+
+    cursor.execute(query, values)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Client Work Order Updated Successfully"
+    })
+
+
+@app.route('/client_work_order/<int:id>', methods=['DELETE'])
+def delete_client_work_order(id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "DELETE FROM client_work_order WHERE id=%s"
+
+    cursor.execute(query, (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Client Work Order Deleted Successfully"
+    })
+
+@app.route("/")
+def login_page():
+    return render_template("login.html")
+
+
 @app.route("/companypage")
 def company_page():
     return render_template("company.html")
-@app.route("/")
-def login_page():   
-    return render_template("login.html")
+
+
 @app.route("/resourcepage")
 def resource_page():
     return render_template("resource.html")
-@app.route('/client_msa_page')
+
+
+@app.route("/client_msa_page")
 def client_msa_page():
-    return render_template('client_msa.html')
+    return render_template("client_msa.html")
+
+
+@app.route("/client_work_order_page")
+def client_work_order_page():
+    return render_template("client_work_order.html")
+
+@app.route('/resource_details/<company>/<resource>')
+def resource_details(company, resource):
+
+    conn = get_connection()
+
+    cursor = conn.cursor(dictionary=True)
+
+
+    query = """
+    SELECT
+        company_name,
+        resource_type,
+        start_date,
+        end_date
+    FROM resource
+    WHERE company_name=%s
+    AND first_name=%s
+    """
+
+
+    cursor.execute(query,(company,resource))
+
+
+    data = cursor.fetchone()
+
+
+    cursor.close()
+
+    conn.close()
+
+
+    return jsonify(data)
+
 if __name__ == "__main__":
     app.run(debug=True)
