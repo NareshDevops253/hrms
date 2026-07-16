@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client Work Order</title>
+</head>
+<body>
+
+    <h2>Client Work Order</h2>
+
+    <label>Client MSA</label><br>
+    <select id="client_msa_id">
+        <option value="">Select Client MSA</option>
+    </select>
+    <br><br>
+
+    <label>Work Order Number</label><br>
+    <input type="text" id="work_order_number">
+    <br><br>
+
+    <label>Project Name</label><br>
+    <input type="text" id="project_name">
+    <br><br>
+
+    <!-- NEW -->
+    <label>Company Name</label><br>
+    <select id="company_name">
+        <option value="">Select Company</option>
+    </select>
+    <br><br>
+
+    <!-- NEW -->
+    <label>Resource Name</label><br>
+    <select id="resource_name">
+        <option value="">Select Resource</option>
+    </select>
+    <br><br>
+
+    <label>Resource Type</label><br>
+    <select id="resource_type">
+        <option value="">Select Resource Type</option>
+        <option value="C2C">C2C</option>
+        <option value="W2">W2</option>
+        <option value="1099">1099</option>
+    </select>
+    <br><br>
+
+    <label>Start Date</label><br>
+    <input type="date" id="start_date">
+    <br><br>
+
+    <label>End Date</label><br>
+    <input type="date" id="end_date">
+    <br><br>
+
+    <label>Status</label><br>
+    <select id="status">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+    </select>
+    <br><br>
+
+    <button onclick="saveClientWorkOrder()">Save</button>
+
+    <hr>
+
+    <h3>Client Work Orders</h3>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client MSA</th>
+                <th>Work Order No</th>
+                <th>Project Name</th>
+                <th>Company Name</th>
+                <th>Resource Name</th>
+                <th>Resource Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="clientWorkOrderTable">
+        </tbody>
+    </table>
+
+    <script src="/static/js/client_work_order.js"></script>
+
+</body>
+</html>
