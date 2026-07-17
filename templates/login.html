@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HRMS Login</title>
+</head>
+<body>
+
+<h2>Login</h2>
+
+<label>Username</label><br>
+<input type="text" id="username"><br><br>
+
+<label>Password</label><br>
+<input type="password" id="password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<p id="message"></p>
+
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+</body>
+</html>
