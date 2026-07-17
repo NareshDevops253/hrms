@@ -33,6 +33,7 @@ function saveResource() {
     let email = document.getElementById("email").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let designation = document.getElementById("designation").value.trim();
+    let company_name = document.getElementById("company_name").value.trim();
     let resource_type = document.getElementById("resource_type").value;
     let company_id = document.getElementById("company_id").value;
     let status = document.getElementById("status").value;
@@ -67,6 +68,10 @@ function saveResource() {
         alert("Designation is required");
         return;
     }
+    if (company_name === "") {
+        alert("Company Name is required");
+        return;
+    }
     if (resource_type === "") {
         alert("Please select a resource type");
         return;
@@ -89,6 +94,7 @@ function saveResource() {
             email,
             phone,
             designation,
+            company_name,
             resource_type,
             company_id,
             status
@@ -113,6 +119,7 @@ function updateResource() {
     let email = document.getElementById("email").value.trim();
     let phone = document.getElementById("phone").value.trim();
     let designation = document.getElementById("designation").value.trim();
+    let company_name = document.getElementById("company_name").value.trim();
     let resource_type = document.getElementById("resource_type").value;
     let company_id = document.getElementById("company_id").value;
     let status = document.getElementById("status").value;
@@ -139,6 +146,7 @@ function updateResource() {
             email,
             phone,
             designation,
+            company_name,
             resource_type,
             company_id,
             status
