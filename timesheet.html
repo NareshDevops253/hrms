@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Timesheet Management</title>
+
+
+    <!-- ==========================================
+         CSS INSIDE HTML
+    =========================================== -->
+
+    <style>
+
+
+        /* ==========================================
+           RESET
+        =========================================== */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ==========================================
+           BODY
+        =========================================== */
+
+        body {
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            background: #f4f6f9;
+
+            color: #333;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* ==========================================
+           MAIN CONTAINER
+        =========================================== */
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1400px;
+
+            min-height: 100vh;
+
+            margin: 0 auto;
+
+            padding: 30px 0;
+
+        }
+
+
+        /* ==========================================
+           PAGE HEADER
+        =========================================== */
+
+        .page-header {
+
+            width: 100%;
+
+            min-height: 110px;
+
+            background: white;
+
+            padding: 25px 30px;
+
+            margin-bottom: 25px;
+
+            border-radius: 10px;
+
+            box-shadow:
+
+                0 2px 8px
+
+                rgba(
+
+                    0,
+
+                    0,
+
+                    0,
+
+                    0.08
+
+                );
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+
+        .page-header h1 {
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .page-header p {
+
+            color: #777;
+
+            font-size: 15px;
+
+        }
+
+
+        /* ==========================================
+           CARD
+        =========================================== */
+
+        .card {
+
+            width: 100%;
+
+            background: white;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            border-radius: 10px;
+
+            box-shadow:
+
+                0 2px 8px
+
+                rgba(
+
+                    0,
+
+                    0,
+
+                    0,
+
+                    0.08
+
+                );
+
+        }
+
+
+        .card h2 {
+
+            font-size: 22px;
+
+            margin-bottom: 25px;
+
+            color: #333;
+
+        }
+
+
+        .card h3 {
+
+            font-size: 18px;
+
+            margin-top: 25px;
+
+            margin-bottom: 15px;
+
+            color: #444;
+
+        }
+
+
+        /* ==========================================
+           FORM
+        =========================================== */
+
+        .form-group {
+
+            width: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .form-group label {
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+
+            color: #444;
+
+        }
+
+
+        .form-group input,
+
+        .form-group select,
+
+        .form-group textarea {
+
+            width: 100%;
+
+            min-height: 44px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cfd4da;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            background: white;
+
+        }
+
+
+        .form-group textarea {
+
+            min-height: 100px;
+
+            resize: vertical;
+
+        }
+
+
+        .form-group input:focus,
+
+        .form-group select:focus,
+
+        .form-group textarea:focus {
+
+            outline: none;
+
+            border-color: #007bff;
+
+            box-shadow:
+
+                0 0 4px
+
+                rgba(
+
+                    0,
+
+                    123,
+
+                    255,
+
+                    0.25
+
+                );
+
+        }
+
+
+        /* ==========================================
+           DATE ROW
+        =========================================== */
+
+        .form-row {
+
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+
+                repeat(
+
+                    2,
+
+                    minmax(
+
+                        0,
+
+                        1fr
+
+                    )
+
+                );
+
+            gap: 20px;
+
+        }
+
+
+        /* ==========================================
+           WEEKLY HOURS
+        =========================================== */
+
+        .hours-grid {
+
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+
+                repeat(
+
+                    4,
+
+                    minmax(
+
+                        0,
+
+                        1fr
+
+                    )
+
+                );
+
+            gap: 18px;
+
+        }
+
+
+        /* ==========================================
+           TOTAL HOURS
+        =========================================== */
+
+        #total_hours {
+
+            width: 220px;
+
+            background: #f1f3f5;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ==========================================
+           BUTTONS
+        =========================================== */
+
+        .button-group {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 25px;
+
+        }
+
+
+        .btn {
+
+            min-width: 140px;
+
+            height: 44px;
+
+            padding: 0 20px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        .btn:hover {
+
+            opacity: 0.85;
+
+        }
+
+
+        .draft-btn {
+
+            background: #f0ad4e;
+
+            color: white;
+
+        }
+
+
+        .submit-btn {
+
+            background: #28a745;
+
+            color: white;
+
+        }
+
+
+        .cancel-btn {
+
+            background: #6c757d;
+
+            color: white;
+
+        }
+
+
+        /* ==========================================
+           TABLE HEADER
+        =========================================== */
+
+        .table-header {
+
+            width: 100%;
+
+            min-height: 45px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .table-header h2 {
+
+            margin: 0;
+
+        }
+
+
+        .refresh-btn {
+
+            min-width: 100px;
+
+            height: 40px;
+
+            padding: 0 15px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #343a40;
+
+            color: white;
+
+            cursor: pointer;
+
+        }
+
+
+        /* ==========================================
+           TABLE
+        =========================================== */
+
+        .table-container {
+
+            width: 100%;
+
+            max-height: 500px;
+
+            overflow-x: auto;
+
+            overflow-y: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            min-width: 1000px;
+
+            border-collapse: collapse;
+
+        }
+
+
+        table th,
+
+        table td {
+
+            height: 52px;
+
+            padding: 12px 15px;
+
+            border-bottom: 1px solid #e1e1e1;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+            font-size: 14px;
+
+        }
+
+
+        table th {
+
+            height: 55px;
+
+            background: #f1f3f5;
+
+            font-weight: 700;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1;
+
+        }
+
+
+        table tr:hover {
+
+            background: #f8f9fa;
+
+        }
+
+
+        /* ==========================================
+           STATUS
+        =========================================== */
+
+        .status {
+
+            display: inline-block;
+
+            min-width: 80px;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .status-draft {
+
+            background: #fff3cd;
+
+            color: #856404;
+
+        }
+
+
+        .status-submitted {
+
+            background: #d4edda;
+
+            color: #155724;
+
+        }
+
+
+        /* ==========================================
+           ACTION BUTTONS
+        =========================================== */
+
+        .action-btn {
+
+            min-width: 65px;
+
+            height: 32px;
+
+            padding: 0 10px;
+
+            margin-right: 5px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .edit-btn {
+
+            background: #007bff;
+
+            color: white;
+
+        }
+
+
+        .delete-btn {
+
+            background: #dc3545;
+
+            color: white;
+
+        }
+
+
+        .submit-action-btn {
+
+            background: #28a745;
+
+            color: white;
+
+        }
+
+
+        /* ==========================================
+           RESPONSIVE
+        =========================================== */
+
+        @media (max-width: 1000px) {
+
+
+            .hours-grid {
+
+                grid-template-columns:
+
+                    repeat(
+
+                        3,
+
+                        minmax(
+
+                            0,
+
+                            1fr
+
+                        )
+
+                    );
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+
+            .container {
+
+                width: 94%;
+
+                padding: 15px 0;
+
+            }
+
+
+            .card {
+
+                padding: 20px;
+
+            }
+
+
+            .form-row {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .hours-grid {
+
+                grid-template-columns:
+
+                    repeat(
+
+                        2,
+
+                        minmax(
+
+                            0,
+
+                            1fr
+
+                        )
+
+                    );
+
+            }
+
+
+            .button-group {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+            }
+
+
+            #total_hours {
+
+                width: 100%;
+
+            }
+
+
+            .table-header {
+
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+
+            }
+
+
+            .refresh-btn {
+
+                width: 100%;
+
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+
+            .hours-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+
+        <div class="page-header">
+
+
+            <div>
+
+
+                <h1>
+
+                    Timesheet Management
+
+                </h1>
+
+
+                <p>
+
+                    Manage employee weekly timesheets
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             FORM CARD
+        ========================== -->
+
+
+        <div class="card">
+
+
+            <h2 id="formTitle">
+
+                Create Timesheet
+
+            </h2>
+
+
+            <form id="timesheetForm">
+
+
+                <input
+
+                    type="hidden"
+
+                    id="timesheet_id"
+
+                >
+
+
+                <!-- RESOURCE -->
+
+
+                <div class="form-group">
+
+
+                    <label
+
+                        for="resource_id"
+
+                    >
+
+                        Resource Name
+
+                    </label>
+
+
+                    <select
+
+                        id="resource_id"
+
+                        required
+
+                    >
+
+
+                        <option value="">
+
+                            Select Resource
+
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+                <!-- PROJECT -->
+
+
+                <div class="form-group">
+
+
+                    <label
+
+                        for="project_name"
+
+                    >
+
+                        Project Name
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="project_name"
+
+                        placeholder="Enter project name"
+
+                        required
+
+                    >
+
+
+                </div>
+
+
+                <!-- DATES -->
+
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+
+                        <label
+
+                            for="week_start_date"
+
+                        >
+
+                            Week Start Date
+
+                        </label>
+
+
+                        <input
+
+                            type="date"
+
+                            id="week_start_date"
+
+                            required
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label
+
+                            for="week_end_date"
+
+                        >
+
+                            Week End Date
+
+                        </label>
+
+
+                        <input
+
+                            type="date"
+
+                            id="week_end_date"
+
+                            required
+
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- HOURS -->
+
+
+                <h3>
+
+                    Weekly Hours
+
+                </h3>
+
+
+                <div class="hours-grid">
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Monday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="monday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Tuesday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="tuesday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Wednesday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="wednesday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Thursday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="thursday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Friday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="friday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Saturday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="saturday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                    <div class="form-group">
+
+
+                        <label>
+
+                            Sunday
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            id="sunday_hours"
+
+                            min="0"
+
+                            max="24"
+
+                            step="0.5"
+
+                            value="0"
+
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- TOTAL HOURS -->
+
+
+                <div class="form-group">
+
+
+                    <label>
+
+                        Total Hours
+
+                    </label>
+
+
+                    <input
+
+                        type="number"
+
+                        id="total_hours"
+
+                        readonly
+
+                        value="0"
+
+                    >
+
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+
+                <div class="form-group">
+
+
+                    <label>
+
+                        Description
+
+                    </label>
+
+
+                    <textarea
+
+                        id="description"
+
+                        rows="4"
+
+                        placeholder="Enter work description"
+
+                    ></textarea>
+
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+
+                <div class="button-group">
+
+
+                    <button
+
+                        type="button"
+
+                        class="btn draft-btn"
+
+                        id="saveDraftBtn"
+
+                    >
+
+                        Save Draft
+
+                    </button>
+
+
+                    <button
+
+                        type="button"
+
+                        class="btn submit-btn"
+
+                        id="submitBtn"
+
+                    >
+
+                        Submit Timesheet
+
+                    </button>
+
+
+                    <button
+
+                        type="button"
+
+                        class="btn cancel-btn"
+
+                        id="cancelBtn"
+
+                    >
+
+                        Cancel
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+        <!-- =========================
+             TABLE CARD
+        ========================== -->
+
+
+        <div class="card">
+
+
+            <div class="table-header">
+
+
+                <h2>
+
+                    Timesheet List
+
+                </h2>
+
+
+                <button
+
+                    class="refresh-btn"
+
+                    onclick="loadTimesheets()"
+
+                >
+
+                    Refresh
+
+                </button>
+
+
+            </div>
+
+
+            <div class="table-container">
+
+
+                <table>
+
+
+                    <thead>
+
+
+                        <tr>
+
+
+                            <th>
+
+                                ID
+
+                            </th>
+
+
+                            <th>
+
+                                Resource
+
+                            </th>
+
+
+                            <th>
+
+                                Project
+
+                            </th>
+
+
+                            <th>
+
+                                Week Start
+
+                            </th>
+
+
+                            <th>
+
+                                Week End
+
+                            </th>
+
+
+                            <th>
+
+                                Total Hours
+
+                            </th>
+
+
+                            <th>
+
+                                Status
+
+                            </th>
+
+
+                            <th>
+
+                                Actions
+
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+                    <tbody
+
+                        id="timesheetTableBody"
+
+                    >
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==========================================
+         JAVASCRIPT FILE
+    =========================================== -->
+
+
+    <script
+
+        src="{{ url_for('static', filename='js/timesheet.js') }}"
+
+    ></script>
+
+
+</body>
+
+
+</html>

@@ -1,328 +1,282 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>Resource</title>
+    <meta charset="UTF-8">
 
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<style>
-
-*{
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
-}
-
-
-body{
-
-    margin:0;
-    padding:20px;
-    background:#f4f7fb;
-    min-height:100vh;
-
-}
-
-
-
-.container{
-
-    width:100%;
-    min-height:100vh;
-    background:white;
-    padding:40px;
-    border-radius:10px;
-    box-shadow:0px 5px 15px rgba(0,0,0,0.15);
-
-}
-
-
-
-h2{
-
-    text-align:center;
-    color:#2c3e50;
-    margin-bottom:35px;
-
-}
-
-
-
-.form-grid{
-
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:25px;
-
-}
-
-
-
-.form-group{
-
-    display:flex;
-    flex-direction:column;
-
-}
-
-
-
-label{
-
-    font-weight:bold;
-    margin-bottom:8px;
-    color:#34495e;
-
-}
-
-
-
-input,
-select{
-
-    width:100%;
-    height:42px;
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:5px;
-    font-size:14px;
-
-}
-
-
-
-input:focus,
-select:focus{
-
-    outline:none;
-    border-color:#3498db;
-
-}
-
-
-
-.button-section{
-
-    text-align:center;
-    margin-top:35px;
-
-}
-
-
-
-button{
-
-    width:220px;
-    height:45px;
-    background:#3498db;
-    color:white;
-    border:none;
-    border-radius:6px;
-    font-size:16px;
-    cursor:pointer;
-
-}
-
-
-
-button:hover{
-
-    background:#2980b9;
-
-}
-
-
-
-@media(max-width:900px){
-
-.form-grid{
-
-    grid-template-columns:1fr;
-
-}
-
-}
-
-
-</style>
-
+    <title>Resource Management</title>
 
 </head>
-
 
 
 <body>
 
 
+    <h2>Resource Management</h2>
 
-<div class="container">
 
+    <!-- RESOURCE ID -->
 
-<h2>Resource Form</h2>
+    <input
 
+        type="hidden"
 
+        id="resource_id"
 
-<div class="form-grid">
+    >
 
 
+    <!-- EMPLOYEE ID -->
 
-<div class="form-group">
+    <label>Employee ID</label>
 
-<label>Employee ID</label>
+    <input
 
-<input type="text" id="employee_id" placeholder="Enter Employee ID">
+        type="text"
 
-</div>
+        id="employee_id"
 
+    >
 
+    <br><br>
 
-<div class="form-group">
 
-<label>First Name</label>
+    <!-- FIRST NAME -->
 
-<input type="text" id="first_name" placeholder="Enter First Name">
+    <label>First Name</label>
 
-</div>
+    <input
 
+        type="text"
 
+        id="first_name"
 
-<div class="form-group">
+    >
 
-<label>Last Name</label>
+    <br><br>
 
-<input type="text" id="last_name" placeholder="Enter Last Name">
 
-</div>
+    <!-- LAST NAME -->
 
+    <label>Last Name</label>
 
+    <input
 
-<div class="form-group">
+        type="text"
 
-<label>Email</label>
+        id="last_name"
 
-<input type="email" id="email" placeholder="Enter Email">
+    >
 
-</div>
+    <br><br>
 
 
+    <!-- EMAIL -->
 
-<div class="form-group">
+    <label>Email</label>
 
-<label>Phone</label>
+    <input
 
-<input type="text" id="phone" placeholder="Enter Phone Number">
+        type="email"
 
-</div>
+        id="email"
 
+    >
 
+    <br><br>
 
-<div class="form-group">
 
-<label>Designation</label>
+    <!-- PHONE -->
 
-<input type="text" id="designation" placeholder="Enter Designation">
+    <label>Phone</label>
 
-</div>
+    <input
 
+        type="text"
 
+        id="phone"
 
-<div class="form-group">
+        maxlength="10"
 
-<label>Company Name</label>
+    >
 
-<input type="text" id="company_name" placeholder="Enter Company Name">
+    <br><br>
 
-</div>
 
+    <!-- DESIGNATION -->
 
+    <label>Designation</label>
 
-<div class="form-group">
+    <input
 
-<label>Resource Type</label>
+        type="text"
 
+        id="designation"
 
-<select id="resource_type">
+    >
 
-<option value="">Select Resource Type</option>
+    <br><br>
 
-<option value="W2">W2</option>
 
-<option value="C2C">C2C</option>
+    <!-- COMPANY NAME -->
 
-<option value="1099">1099</option>
+    <label>Company Name</label>
 
+    <input
 
-</select>
+        type="text"
 
+        id="company_name"
 
-</div>
+    >
 
+    <br><br>
 
 
-<div class="form-group">
+    <!-- COMPANY DROPDOWN -->
 
-<label>Select Company</label>
+    <label>Company</label>
 
+    <select id="company_id">
 
-<select id="company_id">
+        <option value="">
 
+            Select Company
 
-<option value="">Select Company</option>
+        </option>
 
+    </select>
 
-</select>
+    <br><br>
 
 
-</div>
+    <!-- RESOURCE TYPE -->
 
+    <label>Resource Type</label>
 
+    <select id="resource_type">
 
-<div class="form-group">
+        <option value="">
 
-<label>Status</label>
+            Select Resource Type
 
+        </option>
 
-<select id="status">
 
+        <option value="W2">
 
-<option value="Active">Active</option>
+            W2
 
-<option value="Inactive">Inactive</option>
+        </option>
 
 
-</select>
+        <option value="C2C">
 
+            C2C
 
-</div>
+        </option>
 
 
+        <option value="1099">
 
-</div>
+            1099
 
+        </option>
 
+    </select>
 
-<div class="button-section">
+    <br><br>
 
 
-<button onclick="saveResource()">
+    <!-- STATUS -->
 
-Save Resource
+    <label>Status</label>
 
-</button>
+    <select id="status">
 
+        <option value="">
 
-</div>
+            Select Status
 
+        </option>
 
 
-</div>
+        <option value="Active">
 
+            Active
 
+        </option>
 
-<script src="/static/js/resource.js?v=2"></script>
+
+        <option value="Inactive">
+
+            Inactive
+
+        </option>
+
+    </select>
+
+    <br><br>
+
+
+    <!-- START DATE -->
+
+    <label>Start Date</label>
+
+    <input
+
+        type="date"
+
+        id="start_date"
+
+    >
+
+    <br><br>
+
+
+    <!-- BUTTONS -->
+
+    <button
+
+        onclick="saveResource()"
+
+    >
+
+        Save Resource
+
+    </button>
+
+
+    <button
+
+        onclick="updateResource()"
+
+    >
+
+        Update Resource
+
+    </button>
+
+
+    <script
+
+        src="{{ url_for(
+
+            'static',
+
+            filename='js/resource.js'
+
+        ) }}"
+
+    >
+
+    </script>
 
 
 </body>
-
 
 </html>
