@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+
+<title>Supplier PO</title>
+
+
+<style>
+
+
+    * {
+
+        box-sizing: border-box;
+
+        font-family: Arial, sans-serif;
+
+    }
+
+
+    body {
+
+        margin: 0;
+
+        background: #f4f6f9;
+
+    }
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+
+        position: fixed;
+
+        left: 0;
+
+        top: 0;
+
+        width: 230px;
+
+        height: 100vh;
+
+        background: #212529;
+
+        padding: 25px 15px;
+
+        overflow-y: auto;
+
+    }
+
+
+    .sidebar h2 {
+
+        color: white;
+
+        text-align: center;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .sidebar a {
+
+        display: block;
+
+        color: white;
+
+        text-decoration: none;
+
+        padding: 12px 15px;
+
+        margin-bottom: 8px;
+
+        border-radius: 5px;
+
+    }
+
+
+    .sidebar a:hover {
+
+        background: #3498db;
+
+    }
+
+
+    /* =========================
+       MAIN CONTENT
+    ========================= */
+
+    .main-content {
+
+        margin-left: 230px;
+
+        padding: 30px;
+
+        min-height: 100vh;
+
+    }
+
+
+    /* =========================
+       CONTAINER
+    ========================= */
+
+    .container {
+
+        width: 100%;
+
+        max-width: 1200px;
+
+        margin: auto;
+
+        background: white;
+
+        padding: 30px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 0 10px #ccc;
+
+    }
+
+
+    h2 {
+
+        text-align: center;
+
+        color: #333;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    /* =========================
+       FORM GRID
+    ========================= */
+
+    .form-grid {
+
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 20px;
+
+    }
+
+
+    .form-group {
+
+        margin-bottom: 5px;
+
+    }
+
+
+    label {
+
+        display: block;
+
+        font-weight: bold;
+
+        color: #555;
+
+        margin-bottom: 7px;
+
+    }
+
+
+    input,
+
+    select {
+
+        width: 100%;
+
+        height: 42px;
+
+        padding: 8px 10px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+    }
+
+
+    input[readonly] {
+
+        background: #f1f1f1;
+
+    }
+
+
+    input:focus,
+
+    select:focus {
+
+        outline: none;
+
+        border-color: #007bff;
+
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+
+    }
+
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .button-section {
+
+        margin-top: 25px;
+
+        text-align: center;
+
+    }
+
+
+    button {
+
+        width: 150px;
+
+        height: 40px;
+
+        background: #007bff;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        font-size: 16px;
+
+    }
+
+
+    button:hover {
+
+        background: #0056b3;
+
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-container {
+
+        width: 100%;
+
+        overflow-x: auto;
+
+    }
+
+
+    table {
+
+        width: 100%;
+
+        margin-top: 30px;
+
+        border-collapse: collapse;
+
+        background: white;
+
+        min-width: 900px;
+
+    }
+
+
+    th {
+
+        background: #007bff;
+
+        color: white;
+
+        padding: 12px;
+
+    }
+
+
+    td {
+
+        padding: 10px;
+
+        text-align: center;
+
+        border: 1px solid #ddd;
+
+    }
+
+
+    tr:nth-child(even) {
+
+        background: #f2f2f2;
+
+    }
+
+
+    tr:hover {
+
+        background: #e9ecef;
+
+    }
+
+
+    /* =========================
+       ACTION BUTTONS
+    ========================= */
+
+    .edit-btn {
+
+        background: #28a745;
+
+        width: 70px;
+
+        height: 30px;
+
+        font-size: 12px;
+
+    }
+
+
+    .delete-btn {
+
+        background: #dc3545;
+
+        width: 70px;
+
+        height: 30px;
+
+        font-size: 12px;
+
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+
+        .sidebar {
+
+            position: relative;
+
+            width: 100%;
+
+            height: auto;
+
+        }
+
+
+        .main-content {
+
+            margin-left: 0;
+
+            padding: 20px;
+
+        }
+
+
+        .container {
+
+            width: 100%;
+
+        }
+
+
+        .form-grid {
+
+            grid-template-columns: 1fr;
+
+        }
+
+    }
+
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+
+<div class="sidebar">
+
+
+    <h2>
+
+        HRMS
+
+    </h2>
+
+
+    <a href="{{ url_for('dashboard_page') }}">
+
+        🏠 Dashboard
+
+    </a>
+
+
+    <a href="{{ url_for('company_page') }}">
+
+        🏢 Company
+
+    </a>
+
+
+    <a href="{{ url_for('resource_page') }}">
+
+        👨‍💼 Resource
+
+    </a>
+
+
+    <a href="{{ url_for('client_msa_page') }}">
+
+        📄 Client MSA
+
+    </a>
+
+
+    <a href="{{ url_for('client_work_order_page') }}">
+
+        📋 Client Work Order
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_msa_page') }}">
+
+        📑 Supplier MSA
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_po_page') }}">
+
+        🧾 Supplier PO
+
+    </a>
+
+
+    <a href="{{ url_for('timesheet_page') }}">
+
+        ⏱️ Timesheet
+
+    </a>
+
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+
+<div class="main-content">
+
+
+    <div class="container">
+
+
+        <h2>
+
+            Supplier PO
+
+        </h2>
+
+
+        <!-- =========================
+             FORM
+        ========================= -->
+
+
+        <div class="form-grid">
+
+
+            <!-- SUPPLIER MSA -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Supplier MSA
+
+                </label>
+
+
+                <select id="supplier_msa_id">
+
+
+                    <option value="">
+
+                        Select Supplier MSA
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+            <!-- RESOURCE -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Resource - C2C Only
+
+                </label>
+
+
+                <select id="resource_id">
+
+
+                    <option value="">
+
+                        Select Resource
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+            <!-- RESOURCE TYPE -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Resource Type
+
+                </label>
+
+
+                <input
+
+                    type="text"
+
+                    id="resource_type"
+
+                    readonly
+
+                >
+
+
+            </div>
+
+
+            <!-- PO NUMBER -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    PO Number
+
+                </label>
+
+
+                <input
+
+                    id="po_number"
+
+                    placeholder="PO Number"
+
+                >
+
+
+            </div>
+
+
+            <!-- PROJECT -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Project Name
+
+                </label>
+
+
+                <input
+
+                    id="project_name"
+
+                    placeholder="Project Name"
+
+                >
+
+
+            </div>
+
+
+            <!-- START DATE -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Start Date
+
+                </label>
+
+
+                <input
+
+                    type="date"
+
+                    id="start_date"
+
+                >
+
+
+            </div>
+
+
+            <!-- END DATE -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    End Date
+
+                </label>
+
+
+                <input
+
+                    type="date"
+
+                    id="end_date"
+
+                >
+
+
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Amount
+
+                </label>
+
+
+                <input
+
+                    type="number"
+
+                    id="amount"
+
+                    placeholder="Amount"
+
+                >
+
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Status
+
+                </label>
+
+
+                <select id="status">
+
+
+                    <option value="Active">
+
+                        Active
+
+                    </option>
+
+
+                    <option value="Inactive">
+
+                        Inactive
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             SAVE BUTTON
+        ========================= -->
+
+
+        <div class="button-section">
+
+
+            <button
+
+                onclick="saveSupplierPO()"
+
+            >
+
+                Save
+
+            </button>
+
+
+        </div>
+
+
+        <!-- =========================
+             TABLE
+        ========================= -->
+
+
+        <div class="table-container">
+
+
+            <table>
+
+
+                <thead>
+
+
+                    <tr>
+
+
+                        <th>
+
+                            ID
+
+                        </th>
+
+
+                        <th>
+
+                            Supplier MSA
+
+                        </th>
+
+
+                        <th>
+
+                            Resource
+
+                        </th>
+
+
+                        <th>
+
+                            Type
+
+                        </th>
+
+
+                        <th>
+
+                            PO Number
+
+                        </th>
+
+
+                        <th>
+
+                            Project
+
+                        </th>
+
+
+                        <th>
+
+                            Amount
+
+                        </th>
+
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+
+                        <th>
+
+                            Action
+
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+                <tbody
+
+                    id="supplier_po_table"
+
+                >
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     SUPPLIER PO JAVASCRIPT
+========================= -->
+
+
+<script
+
+    src="{{ url_for('static', filename='js/supplier_po.js') }}"
+
+></script>
+```
+
+</body>
+
+</html>

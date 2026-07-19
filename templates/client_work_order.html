@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Client Work Order</title>
+
+
+<style>
+
+
+    * {
+
+        box-sizing: border-box;
+
+        font-family: Arial, sans-serif;
+
+    }
+
+
+    body {
+
+        margin: 0;
+
+        background: #f4f6f8;
+
+    }
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+
+        position: fixed;
+
+        left: 0;
+
+        top: 0;
+
+        width: 230px;
+
+        height: 100vh;
+
+        background: #212529;
+
+        padding: 25px 15px;
+
+        overflow-y: auto;
+
+    }
+
+
+    .sidebar h2 {
+
+        color: white;
+
+        text-align: center;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .sidebar a {
+
+        display: block;
+
+        color: white;
+
+        text-decoration: none;
+
+        padding: 12px 15px;
+
+        margin-bottom: 8px;
+
+        border-radius: 5px;
+
+    }
+
+
+    .sidebar a:hover {
+
+        background: #3498db;
+
+    }
+
+
+    /* =========================
+       MAIN CONTENT
+    ========================= */
+
+    .main-content {
+
+        margin-left: 230px;
+
+        padding: 30px;
+
+        min-height: 100vh;
+
+    }
+
+
+    /* =========================
+       CONTAINER
+    ========================= */
+
+    .container {
+
+        width: 100%;
+
+        background: white;
+
+        padding: 30px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 0 10px #ccc;
+
+    }
+
+
+    h2 {
+
+        text-align: center;
+
+        color: #333;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    /* =========================
+       FORM ROW
+    ========================= */
+
+    .form-row {
+
+        display: flex;
+
+        gap: 20px;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .form-group {
+
+        flex: 1;
+
+    }
+
+
+    label {
+
+        display: block;
+
+        margin-bottom: 7px;
+
+        font-weight: bold;
+
+        color: #444;
+
+    }
+
+
+    input,
+
+    select {
+
+        width: 100%;
+
+        height: 42px;
+
+        padding: 10px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+    }
+
+
+    input[readonly] {
+
+        background: #eeeeee;
+
+    }
+
+
+    input:focus,
+
+    select:focus {
+
+        outline: none;
+
+        border-color: #3498db;
+
+    }
+
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    button {
+
+        padding: 10px 20px;
+
+        margin: 10px 5px 20px 0;
+
+        border: none;
+
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+
+    }
+
+
+    #saveBtn {
+
+        background: green;
+
+        color: white;
+
+    }
+
+
+    #saveBtn:hover {
+
+        background: #218838;
+
+    }
+
+
+    #updateBtn {
+
+        background: blue;
+
+        color: white;
+
+        display: none;
+
+    }
+
+
+    #updateBtn:hover {
+
+        background: #0056b3;
+
+    }
+
+
+    #clearBtn {
+
+        background: gray;
+
+        color: white;
+
+    }
+
+
+    #clearBtn:hover {
+
+        background: #555;
+
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-container {
+
+        width: 100%;
+
+        overflow-x: auto;
+
+    }
+
+
+    table {
+
+        width: 100%;
+
+        min-width: 1100px;
+
+        border-collapse: collapse;
+
+        margin-top: 20px;
+
+    }
+
+
+    th,
+
+    td {
+
+        border: 1px solid #ddd;
+
+        padding: 10px;
+
+        text-align: center;
+
+        white-space: nowrap;
+
+    }
+
+
+    th {
+
+        background: #343a40;
+
+        color: white;
+
+    }
+
+
+    tr:nth-child(even) {
+
+        background: #f8f9fa;
+
+    }
+
+
+    tr:hover {
+
+        background: #e9ecef;
+
+    }
+
+
+    /* =========================
+       ACTION BUTTONS
+    ========================= */
+
+    .edit-btn {
+
+        background: orange;
+
+        color: black;
+
+        padding: 6px 12px;
+
+    }
+
+
+    .edit-btn:hover {
+
+        background: #e0a800;
+
+    }
+
+
+    .delete-btn {
+
+        background: red;
+
+        color: white;
+
+        padding: 6px 12px;
+
+    }
+
+
+    .delete-btn:hover {
+
+        background: #c82333;
+
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+
+        .sidebar {
+
+            position: relative;
+
+            width: 100%;
+
+            height: auto;
+
+        }
+
+
+        .main-content {
+
+            margin-left: 0;
+
+            padding: 20px;
+
+        }
+
+
+        .form-row {
+
+            flex-direction: column;
+
+            gap: 0;
+
+        }
+
+
+        .container {
+
+            padding: 20px;
+
+        }
+
+    }
+
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+
+<div class="sidebar">
+
+
+    <h2>
+
+        HRMS
+
+    </h2>
+
+
+    <a href="{{ url_for('dashboard_page') }}">
+
+        🏠 Dashboard
+
+    </a>
+
+
+    <a href="{{ url_for('company_page') }}">
+
+        🏢 Company
+
+    </a>
+
+
+    <a href="{{ url_for('resource_page') }}">
+
+        👨‍💼 Resource
+
+    </a>
+
+
+    <a href="{{ url_for('client_msa_page') }}">
+
+        📄 Client MSA
+
+    </a>
+
+
+    <a href="{{ url_for('client_work_order_page') }}">
+
+        📋 Client Work Order
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_msa_page') }}">
+
+        📑 Supplier MSA
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_po_page') }}">
+
+        🧾 Supplier PO
+
+    </a>
+
+
+    <a href="{{ url_for('timesheet_page') }}">
+
+        ⏱️ Timesheet
+
+    </a>
+
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+
+<div class="main-content">
+
+
+    <div class="container">
+
+
+        <h2>
+
+            Client Work Order
+
+        </h2>
+
+
+        <!-- =========================
+             CLIENT MSA
+        ========================= -->
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Client MSA
+
+                </label>
+
+
+                <select id="client_msa_id">
+
+
+                    <option value="">
+
+                        Select Client MSA
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Work Order Number
+
+                </label>
+
+
+                <input
+
+                    type="text"
+
+                    id="work_order_number"
+
+                    placeholder="Enter Work Order Number"
+
+                >
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             RESOURCE
+        ========================= -->
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Resource Name
+
+                </label>
+
+
+                <select id="resource_name">
+
+
+                    <option value="">
+
+                        Select Resource
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Company Name
+
+                </label>
+
+
+                <input
+
+                    type="text"
+
+                    id="company_name"
+
+                    readonly
+
+                >
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             RESOURCE TYPE AND START DATE
+        ========================= -->
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Resource Type
+
+                </label>
+
+
+                <input
+
+                    type="text"
+
+                    id="resource_type"
+
+                    readonly
+
+                >
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Work Order Start Date
+
+                </label>
+
+
+                <input
+
+                    type="date"
+
+                    id="start_date"
+
+                >
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             PROJECT AND STATUS
+        ========================= -->
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Project Name
+
+                </label>
+
+
+                <input
+
+                    type="text"
+
+                    id="project_name"
+
+                    placeholder="Enter Project Name"
+
+                >
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Status
+
+                </label>
+
+
+                <select id="status">
+
+
+                    <option value="Active">
+
+                        Active
+
+                    </option>
+
+
+                    <option value="Inactive">
+
+                        Inactive
+
+                    </option>
+
+
+                    <option value="Completed">
+
+                        Completed
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             END DATE
+        ========================= -->
+
+
+        <div class="form-row">
+
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Work Order End Date
+
+                </label>
+
+
+                <input
+
+                    type="date"
+
+                    id="end_date"
+
+                >
+
+
+            </div>
+
+
+            <div class="form-group">
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             BUTTONS
+        ========================= -->
+
+
+        <button
+
+            id="saveBtn"
+
+            onclick="saveClientWorkOrder()"
+
+        >
+
+            Save
+
+        </button>
+
+
+        <button
+
+            id="updateBtn"
+
+            onclick="updateClientWorkOrder()"
+
+        >
+
+            Update
+
+        </button>
+
+
+        <button
+
+            id="clearBtn"
+
+            onclick="clearForm()"
+
+        >
+
+            Clear
+
+        </button>
+
+
+        <!-- =========================
+             TABLE
+        ========================= -->
+
+
+        <h3>
+
+            Client Work Order List
+
+        </h3>
+
+
+        <div class="table-container">
+
+
+            <table>
+
+
+                <thead>
+
+
+                    <tr>
+
+
+                        <th>
+
+                            ID
+
+                        </th>
+
+
+                        <th>
+
+                            MSA Number
+
+                        </th>
+
+
+                        <th>
+
+                            Work Order Number
+
+                        </th>
+
+
+                        <th>
+
+                            Company
+
+                        </th>
+
+
+                        <th>
+
+                            Resource
+
+                        </th>
+
+
+                        <th>
+
+                            Resource Type
+
+                        </th>
+
+
+                        <th>
+
+                            Project
+
+                        </th>
+
+
+                        <th>
+
+                            Start Date
+
+                        </th>
+
+
+                        <th>
+
+                            End Date
+
+                        </th>
+
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+
+                        <th>
+
+                            Actions
+
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+                <tbody
+
+                    id="workOrderTableBody"
+
+                >
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+
+<script
+
+    src="{{ url_for('static', filename='js/client_work_order.js') }}"
+
+></script>
+
+</body>
+
+</html>

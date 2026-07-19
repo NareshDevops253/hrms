@@ -1,41 +1,600 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
+
 <head>
-    <title>Resource</title>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Resource Management</title>
+
+
+<!-- BOOTSTRAP CSS -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+
+<style>
+
+    body {
+
+        margin: 0;
+
+        background-color: #f4f6f9;
+
+    }
+
+
+    .main-content {
+
+        min-height: 100vh;
+
+    }
+
+
+    .resource-container {
+
+        width: 700px;
+
+        min-height: 650px;
+
+        margin: auto;
+
+        background-color: white;
+
+        padding: 30px;
+
+        border-radius: 10px;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+    }
+
+
+    .resource-container h2 {
+
+        text-align: center;
+
+        color: #333;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .form-group {
+
+        margin-bottom: 18px;
+
+    }
+
+
+    label {
+
+        display: block;
+
+        font-weight: bold;
+
+        margin-bottom: 6px;
+
+        color: #444;
+
+    }
+
+
+    input,
+
+    select {
+
+        width: 100%;
+
+        height: 40px;
+
+        padding: 8px 12px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+    }
+
+
+    input:focus,
+
+    select:focus {
+
+        outline: none;
+
+        border-color: #007bff;
+
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+
+    }
+
+
+    .button-container {
+
+        text-align: center;
+
+        margin-top: 25px;
+
+    }
+
+
+    button {
+
+        width: 180px;
+
+        height: 42px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        color: white;
+
+        font-size: 15px;
+
+        cursor: pointer;
+
+        margin: 5px;
+
+    }
+
+
+    button:first-child {
+
+        background-color: #28a745;
+
+    }
+
+
+    button:first-child:hover {
+
+        background-color: #218838;
+
+    }
+
+
+    button:last-child {
+
+        background-color: #007bff;
+
+    }
+
+
+    button:last-child:hover {
+
+        background-color: #0056b3;
+
+    }
+
+
+    @media (max-width: 900px) {
+
+        .resource-container {
+
+            width: 100%;
+
+        }
+
+    }
+
+</style>
+```
+
 </head>
 
 <body>
 
-<h2>Resource Form</h2>
+```
+<!-- =====================================
+     TOP NAVBAR
+====================================== -->
 
-<input type="text" id="employee_id" placeholder="Employee ID"><br><br>
+<nav class="navbar navbar-dark bg-dark">
 
-<input type="text" id="first_name" placeholder="First Name"><br><br>
+    <div class="container-fluid">
 
-<input type="text" id="last_name" placeholder="Last Name"><br><br>
+        <span class="navbar-brand mb-0 h1">
 
-<input type="email" id="email" placeholder="Email"><br><br>
+            HRMS
 
-<input type="text" id="phone" placeholder="Phone"><br><br>
+        </span>
 
-<input type="text" id="designation" placeholder="Designation"><br><br>
+    </div>
 
-<select id="company_id">
-    <option value="">Select Company</option>
-</select>
+</nav>
 
-<br><br>
 
-<select id="status">
-    <option value="Active">Active</option>
-    <option value="Inactive">Inactive</option>
-</select>
+<!-- =====================================
+     MAIN LAYOUT
+====================================== -->
 
-<br><br>
+<div class="container-fluid">
 
-<button onclick="saveResource()">Save Resource</button>
+    <div class="row">
 
-<script src="/static/js/resource.js"></script>
+
+        <!-- =====================================
+             COMMON SIDEBAR
+        ====================================== -->
+
+        {% include 'sidebar.html' %}
+
+
+        <!-- =====================================
+             RESOURCE CONTENT
+        ====================================== -->
+
+        <div class="col-md-9 col-lg-10 p-4 main-content">
+
+
+            <div class="resource-container">
+
+
+                <h2>
+
+                    Resource Management
+
+                </h2>
+
+
+                <!-- RESOURCE ID -->
+
+                <input
+
+                    type="hidden"
+
+                    id="resource_id"
+
+                >
+
+
+                <!-- EMPLOYEE ID -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Employee ID
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="employee_id"
+
+                    >
+
+                </div>
+
+
+                <!-- FIRST NAME -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        First Name
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="first_name"
+
+                    >
+
+                </div>
+
+
+                <!-- LAST NAME -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Last Name
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="last_name"
+
+                    >
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+
+                    <input
+
+                        type="email"
+
+                        id="email"
+
+                    >
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Phone
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="phone"
+
+                        maxlength="10"
+
+                    >
+
+                </div>
+
+
+                <!-- DESIGNATION -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Designation
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="designation"
+
+                    >
+
+                </div>
+
+
+                <!-- COMPANY NAME -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Company Name
+
+                    </label>
+
+
+                    <input
+
+                        type="text"
+
+                        id="company_name"
+
+                    >
+
+                </div>
+
+
+                <!-- COMPANY DROPDOWN -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Company
+
+                    </label>
+
+
+                    <select id="company_id">
+
+
+                        <option value="">
+
+                            Select Company
+
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+
+                <!-- RESOURCE TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Resource Type
+
+                    </label>
+
+
+                    <select id="resource_type">
+
+
+                        <option value="">
+
+                            Select Resource Type
+
+                        </option>
+
+
+                        <option value="W2">
+
+                            W2
+
+                        </option>
+
+
+                        <option value="C2C">
+
+                            C2C
+
+                        </option>
+
+
+                        <option value="1099">
+
+                            1099
+
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+
+                    <select id="status">
+
+
+                        <option value="">
+
+                            Select Status
+
+                        </option>
+
+
+                        <option value="Active">
+
+                            Active
+
+                        </option>
+
+
+                        <option value="Inactive">
+
+                            Inactive
+
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+
+                <!-- START DATE -->
+
+                <div class="form-group">
+
+                    <label>
+
+                        Start Date
+
+                    </label>
+
+
+                    <input
+
+                        type="date"
+
+                        id="start_date"
+
+                    >
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="button-container">
+
+
+                    <button
+
+                        onclick="saveResource()"
+
+                    >
+
+                        Save Resource
+
+                    </button>
+
+
+                    <button
+
+                        onclick="updateResource()"
+
+                    >
+
+                        Update Resource
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- RESOURCE JAVASCRIPT -->
+
+<script src="{{ url_for('static', filename='js/resource.js') }}"></script>
+```
 
 </body>
+
 </html>

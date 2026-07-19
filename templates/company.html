@@ -1,85 +1,541 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
+
 <head>
+
+
+<meta charset="UTF-8">
+
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+
 <title>Company</title>
+
+
+<style>
+
+
+    * {
+
+        box-sizing: border-box;
+
+        font-family: Arial, sans-serif;
+
+    }
+
+
+    body {
+
+        margin: 0;
+
+        padding: 20px;
+
+        background: #f4f7fb;
+
+        min-height: 100vh;
+
+    }
+
+
+    /* =====================================
+       SIDEBAR
+    ===================================== */
+
+    .sidebar {
+
+        position: fixed;
+
+        left: 0;
+
+        top: 0;
+
+        width: 230px;
+
+        height: 100vh;
+
+        background: #212529;
+
+        padding: 25px 15px;
+
+    }
+
+
+    .sidebar h2 {
+
+        color: white;
+
+        text-align: center;
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .sidebar a {
+
+        display: block;
+
+        color: white;
+
+        text-decoration: none;
+
+        padding: 12px 15px;
+
+        margin-bottom: 8px;
+
+        border-radius: 5px;
+
+    }
+
+
+    .sidebar a:hover {
+
+        background: #3498db;
+
+    }
+
+
+    /* =====================================
+       MAIN CONTENT
+    ===================================== */
+
+    .main-content {
+
+        margin-left: 250px;
+
+        padding: 20px;
+
+    }
+
+
+    /* =====================================
+       COMPANY CONTAINER
+    ===================================== */
+
+    .container {
+
+        width: 100%;
+
+        min-height: 100vh;
+
+        background: white;
+
+        padding: 40px;
+
+        border-radius: 10px;
+
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+
+    }
+
+
+    h2 {
+
+        text-align: center;
+
+        color: #2c3e50;
+
+        margin-bottom: 35px;
+
+    }
+
+
+    .form-grid {
+
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 25px;
+
+    }
+
+
+    .form-group {
+
+        display: flex;
+
+        flex-direction: column;
+
+    }
+
+
+    label {
+
+        font-weight: bold;
+
+        margin-bottom: 8px;
+
+        color: #34495e;
+
+    }
+
+
+    input,
+    textarea,
+    select {
+
+        width: 100%;
+
+        height: 42px;
+
+        padding: 10px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+    }
+
+
+    textarea {
+
+        height: 100px;
+
+        resize: none;
+
+    }
+
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+
+        outline: none;
+
+        border-color: #3498db;
+
+    }
+
+
+    .button-section {
+
+        text-align: center;
+
+        margin-top: 30px;
+
+    }
+
+
+    button {
+
+        width: 220px;
+
+        height: 45px;
+
+        background: #3498db;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 6px;
+
+        font-size: 16px;
+
+        cursor: pointer;
+
+    }
+
+
+    button:hover {
+
+        background: #2980b9;
+
+    }
+
+
+    /* =====================================
+       RESPONSIVE
+    ===================================== */
+
+    @media (max-width: 900px) {
+
+
+        .sidebar {
+
+            position: relative;
+
+            width: 100%;
+
+            height: auto;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .main-content {
+
+            margin-left: 0;
+
+            padding: 0;
+
+        }
+
+
+        .form-grid {
+
+            grid-template-columns: 1fr;
+
+        }
+
+    }
+
+
+</style>
+```
+
 </head>
 
 <body>
 
-<h2>Company Form</h2>
+```
+<!-- =====================================
+     SIDEBAR
+===================================== -->
 
 
-<input id="company_name" placeholder="Company Name"><br><br>
-
-<input id="email" placeholder="Email"><br><br>
-
-<input id="phone" placeholder="Phone"><br><br>
-
-<textarea id="address" placeholder="Address"></textarea><br><br>
+<div class="sidebar">
 
 
-<select id="status">
-<option value="Active">Active</option>
-<option value="Inactive">Inactive</option>
-</select>
+    <h2>HRMS</h2>
 
 
-<br><br>
+    <a href="{{ url_for('dashboard_page') }}">
 
-<button onclick="saveCompany()">Save Company</button>
+        🏠 Dashboard
 
-
-
-<script>
+    </a>
 
 
-function saveCompany(){
+    <a href="{{ url_for('company_page') }}">
 
-    let companyData = {
+        🏢 Company
 
-        company_name:
-        document.getElementById("company_name").value,
-
-        email:
-        document.getElementById("email").value,
-
-        phone:
-        document.getElementById("phone").value,
-
-        address:
-        document.getElementById("address").value,
-
-        status:
-        document.getElementById("status").value
-    }
+    </a>
 
 
+    <a href="{{ url_for('resource_page') }}">
 
-    fetch("/company",{
+        👨‍💼 Resource
 
-        method:"POST",
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify(companyData)
-
-    })
-
-    .then(response=>response.json())
-
-    .then(data=>{
-
-        alert(data.message);
-
-    })
-
-}
+    </a>
 
 
-</script>
+    <a href="{{ url_for('client_msa_page') }}">
+
+        📄 Client MSA
+
+    </a>
+
+
+    <a href="{{ url_for('client_work_order_page') }}">
+
+        📋 Client Work Order
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_msa_page') }}">
+
+        📑 Supplier MSA
+
+    </a>
+
+
+    <a href="{{ url_for('supplier_po_page') }}">
+
+        🧾 Supplier PO
+
+    </a>
+
+
+    <a href="{{ url_for('timesheet_page') }}">
+
+        ⏱️ Timesheet
+
+    </a>
+
+
+</div>
+
+
+<!-- =====================================
+     MAIN CONTENT
+===================================== -->
+
+
+<div class="main-content">
+
+
+    <div class="container">
+
+
+        <h2>Company Form</h2>
+
+
+        <div class="form-grid">
+
+
+            <!-- COMPANY NAME -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Company Name
+
+                </label>
+
+
+                <input
+
+                    id="company_name"
+
+                    placeholder="Enter Company Name"
+
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Email
+
+                </label>
+
+
+                <input
+
+                    id="email"
+
+                    placeholder="Enter Email"
+
+                >
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Phone
+
+                </label>
+
+
+                <input
+
+                    id="phone"
+
+                    placeholder="Enter Phone Number"
+
+                >
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Status
+
+                </label>
+
+
+                <select id="status">
+
+
+                    <option value="Active">
+
+                        Active
+
+                    </option>
+
+
+                    <option value="Inactive">
+
+                        Inactive
+
+                    </option>
+
+
+                </select>
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group"
+                 style="grid-column: span 2;">
+
+
+                <label>
+
+                    Address
+
+                </label>
+
+
+                <textarea
+
+                    id="address"
+
+                    placeholder="Enter Address"
+
+                ></textarea>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- SAVE BUTTON -->
+
+        <div class="button-section">
+
+
+            <button onclick="saveCompany()">
+
+                Save Company
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- COMPANY JAVASCRIPT -->
+
+<script src="{{ url_for('static', filename='js/company.js') }}"></script>
 
 
 </body>
+
 </html>

@@ -105,6 +105,96 @@ def login():
         if conn:
             conn.close()
 
+# ============================================================
+# DASHBOARD
+# ============================================================
+
+@app.route("/dashboard", methods=["GET"])
+def get_dashboard():
+
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_connection()
+
+        cursor = conn.cursor(dictionary=True)
+
+
+        # TOTAL COMPANIES
+
+        cursor.execute(
+            "SELECT COUNT(*) AS total FROM company"
+        )
+
+        total_companies = cursor.fetchone()["total"]
+
+
+        # TOTAL RESOURCES
+
+        cursor.execute(
+            "SELECT COUNT(*) AS total FROM resource"
+        )
+
+        total_resources = cursor.fetchone()["total"]
+
+
+        # TOTAL CLIENTS
+
+        cursor.execute(
+            "SELECT COUNT(*) AS total FROM client_msa"
+        )
+
+        total_clients = cursor.fetchone()["total"]
+
+
+        # TOTAL TIMESHEETS
+
+        cursor.execute(
+            "SELECT COUNT(*) AS total FROM timesheet"
+        )
+
+        total_timesheets = cursor.fetchone()["total"]
+
+
+        return jsonify({
+
+            "total_companies": total_companies,
+
+            "total_resources": total_resources,
+
+            "total_clients": total_clients,
+
+            "total_timesheets": total_timesheets
+
+        }), 200
+
+
+    except Exception as e:
+
+        print("Dashboard Error:", e)
+
+        return jsonify({
+
+            "message": "Dashboard data loading failed",
+
+            "error": str(e)
+
+        }), 500
+
+
+    finally:
+
+        if cursor:
+
+            cursor.close()
+
+        if conn:
+
+            conn.close()
+
+
 
 # ============================================================
 # COMPANY CRUD
@@ -2301,303 +2391,1117 @@ def supplier_msa_active():
 # SUPPLIER PO
 # ============================================================
 
+# ==========================================
+# SUPPLIER PO
+# ==========================================
+
+
 @app.route('/supplier_po', methods=['POST'])
 def save_supplier_po():
 
     data, error_response, error_status = get_json_data()
 
     if error_response:
+
         return error_response, error_status
 
-    resource_id = data.get('resource_id')
-    supplier_msa_id = data.get('supplier_msa_id')
-    po_number = str(data.get('po_number', '')).strip()
-    project_name = str(data.get('project_name', '')).strip()
-    start_date = str(data.get('start_date', '')).strip()
-    end_date = str(data.get('end_date', '')).strip()
-    amount = data.get('amount')
-    status = str(data.get('status', '')).strip()
+
+    resource_id = data.get(
+        'resource_id'
+    )
+
+
+    supplier_msa_id = data.get(
+        'supplier_msa_id'
+    )
+
+
+    po_number = str(
+
+        data.get(
+
+            'po_number',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    project_name = str(
+
+        data.get(
+
+            'project_name',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    start_date = str(
+
+        data.get(
+
+            'start_date',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    end_date = str(
+
+        data.get(
+
+            'end_date',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    amount = data.get(
+
+        'amount'
+
+    )
+
+
+    status = str(
+
+        data.get(
+
+            'status',
+
+            'Active'
+
+        )
+
+    ).strip()
+
+
+    # ======================================
+    # VALIDATION
+    # ======================================
+
 
     if not resource_id:
+
         return jsonify({
-            "message": "Resource is required"
+
+            "message":
+
+            "Resource is required"
+
         }), 400
+
 
     if not supplier_msa_id:
-        return jsonify({
-            "message": "Supplier MSA is required"
-        }), 400
-
-    if not validate_date_range(start_date, end_date):
 
         return jsonify({
-            "message": "Invalid date range"
+
+            "message":
+
+            "Supplier MSA is required"
+
         }), 400
+
+
+    if not validate_date_range(
+
+        start_date,
+
+        end_date
+
+    ):
+
+        return jsonify({
+
+            "message":
+
+            "Invalid date range"
+
+        }), 400
+
 
     conn = None
+
     cursor = None
+
 
     try:
 
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
 
-        cursor.execute(
-            """
-            SELECT start_date
-            FROM resource
-            WHERE resource_id=%s
-            """,
-            (resource_id,)
+        conn = get_connection()
+
+
+        cursor = conn.cursor(
+
+            dictionary=True
+
         )
 
+
+        # ======================================
+        # GET RESOURCE
+        # ======================================
+
+
+        cursor.execute(
+
+            """
+
+            SELECT
+
+                resource_id,
+
+                start_date,
+
+                resource_type
+
+            FROM resource
+
+            WHERE resource_id=%s
+
+            """,
+
+            (
+
+                resource_id,
+
+            )
+
+        )
+
+
         resource = cursor.fetchone()
+
 
         if not resource:
 
             return jsonify({
-                "message": "Invalid Resource"
+
+                "message":
+
+                "Invalid Resource"
+
             }), 400
 
-        po_date = datetime.strptime(
-            start_date,
-            "%Y-%m-%d"
-        ).date()
 
-        if po_date < resource["start_date"]:
+        # ======================================
+        # ONLY C2C
+        # ======================================
+
+
+        if resource[
+
+            "resource_type"
+
+        ] != "C2C":
+
 
             return jsonify({
-                "message": "Supplier PO Start Date should be on or after Resource Start Date"
+
+                "message":
+
+                "Only C2C resources can be linked to Supplier PO"
+
             }), 400
 
+
+        # ======================================
+        # START DATE VALIDATION
+        # ======================================
+
+
+        po_date = datetime.strptime(
+
+            start_date,
+
+            "%Y-%m-%d"
+
+        ).date()
+
+
+        if resource[
+
+            "start_date"
+
+        ]:
+
+
+            if po_date < resource[
+
+                "start_date"
+
+            ]:
+
+
+                return jsonify({
+
+                    "message":
+
+                    "Supplier PO Start Date should be on or after Resource Start Date"
+
+                }), 400
+
+
+        # ======================================
+        # INSERT
+        # ======================================
+
+
         query = """
+
             INSERT INTO supplier_po
+
             (
+
                 supplier_msa_id,
+
                 resource_id,
+
                 po_number,
+
                 project_name,
+
                 start_date,
+
                 end_date,
+
                 amount,
+
                 status
+
             )
+
             VALUES
+
             (%s,%s,%s,%s,%s,%s,%s,%s)
+
         """
 
+
         cursor.execute(
+
             query,
+
             (
+
                 supplier_msa_id,
+
                 resource_id,
+
                 po_number,
+
                 project_name,
+
                 start_date,
+
                 end_date,
+
                 amount,
+
                 status
+
             )
+
         )
+
 
         conn.commit()
 
+
         return jsonify({
-            "message": "Supplier PO Saved Successfully"
+
+            "message":
+
+            "Supplier PO Saved Successfully"
+
         }), 201
+
+
+    except Exception as e:
+
+
+        print(
+
+            "SUPPLIER PO ERROR:",
+
+            str(e)
+
+        )
+
+
+        return jsonify({
+
+            "message":
+
+            str(e)
+
+        }), 500
+
 
     finally:
 
+
         if cursor:
+
             cursor.close()
 
+
         if conn:
+
             conn.close()
+
+
+
+# ==========================================
+# GET SUPPLIER PO
+# ==========================================
 
 
 @app.route('/supplier_po', methods=['GET'])
 def get_supplier_po():
 
     conn = None
+
     cursor = None
 
     try:
 
         conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
 
         query = """
+
             SELECT
-                supplier_po.*,
+
+                supplier_po.id,
+
+                supplier_po.supplier_msa_id,
+
+                supplier_po.resource_id,
+
+                supplier_po.po_number,
+
+                supplier_po.project_name,
+
+                supplier_po.start_date,
+
+                supplier_po.end_date,
+
+                supplier_po.amount,
+
+                supplier_po.status,
+
+
                 supplier_msa.supplier_name,
-                supplier_msa.msa_number
+
+                supplier_msa.msa_number,
+
+
+                resource.first_name,
+
+                resource.last_name,
+
+                resource.resource_type,
+
+                resource.start_date AS resource_start_date,
+
+
+                CONCAT(
+
+                    resource.first_name,
+
+                    ' ',
+
+                    resource.last_name
+
+                ) AS resource_name
+
+
             FROM supplier_po
+
+
             JOIN supplier_msa
-                ON supplier_po.supplier_msa_id = supplier_msa.id
+
+                ON supplier_po.supplier_msa_id =
+
+                   supplier_msa.id
+
+
+            JOIN resource
+
+                ON supplier_po.resource_id =
+
+                   resource.resource_id
+
+
             ORDER BY supplier_po.id DESC
+
         """
 
-        cursor.execute(query)
+
+        cursor.execute(
+
+            query
+
+        )
+
 
         data = cursor.fetchall()
 
-        return jsonify(data), 200
+
+        return jsonify(
+
+            data
+
+        ), 200
+
+
+    except Exception as e:
+
+
+        print(
+
+            "GET SUPPLIER PO ERROR:",
+
+            str(e)
+
+        )
+
+
+        return jsonify({
+
+            "message":
+
+            str(e)
+
+        }), 500
+
 
     finally:
 
+
         if cursor:
+
             cursor.close()
 
+
         if conn:
+
             conn.close()
 
 
-@app.route('/supplier_po/<int:id>', methods=['PUT'])
-def update_supplier_po(id):
+# ==========================================
+# UPDATE SUPPLIER PO
+# ==========================================
+
+
+@app.route(
+
+    '/supplier_po/<int:id>',
+
+    methods=['PUT']
+
+)
+
+def update_supplier_po(
+
+    id
+
+):
+
 
     data, error_response, error_status = get_json_data()
 
+
     if error_response:
+
         return error_response, error_status
 
-    resource_id = data.get('resource_id')
-    supplier_msa_id = data.get('supplier_msa_id')
-    po_number = str(data.get('po_number', '')).strip()
-    project_name = str(data.get('project_name', '')).strip()
-    start_date = str(data.get('start_date', '')).strip()
-    end_date = str(data.get('end_date', '')).strip()
-    amount = data.get('amount')
-    status = str(data.get('status', '')).strip()
 
-    if not validate_date_range(start_date, end_date):
+    resource_id = data.get(
+
+        'resource_id'
+
+    )
+
+
+    supplier_msa_id = data.get(
+
+        'supplier_msa_id'
+
+    )
+
+
+    po_number = str(
+
+        data.get(
+
+            'po_number',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    project_name = str(
+
+        data.get(
+
+            'project_name',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    start_date = str(
+
+        data.get(
+
+            'start_date',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    end_date = str(
+
+        data.get(
+
+            'end_date',
+
+            ''
+
+        )
+
+    ).strip()
+
+
+    amount = data.get(
+
+        'amount'
+
+    )
+
+
+    status = str(
+
+        data.get(
+
+            'status',
+
+            'Active'
+
+        )
+
+    ).strip()
+
+
+    if not resource_id:
 
         return jsonify({
-            "message": "Invalid date range"
+
+            "message":
+
+            "Resource is required"
+
         }), 400
 
+
+    if not supplier_msa_id:
+
+        return jsonify({
+
+            "message":
+
+            "Supplier MSA is required"
+
+        }), 400
+
+
+    if not validate_date_range(
+
+        start_date,
+
+        end_date
+
+    ):
+
+        return jsonify({
+
+            "message":
+
+            "Invalid date range"
+
+        }), 400
+
+
     conn = None
+
     cursor = None
+
 
     try:
 
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
 
-        cursor.execute(
-            """
-            SELECT start_date
-            FROM resource
-            WHERE resource_id=%s
-            """,
-            (resource_id,)
+        conn = get_connection()
+
+
+        cursor = conn.cursor(
+
+            dictionary=True
+
         )
 
+
+        # ======================================
+        # CHECK RESOURCE
+        # ======================================
+
+
+        cursor.execute(
+
+            """
+
+            SELECT
+
+                start_date,
+
+                resource_type
+
+            FROM resource
+
+            WHERE resource_id=%s
+
+            """,
+
+            (
+
+                resource_id,
+
+            )
+
+        )
+
+
         resource = cursor.fetchone()
+
 
         if not resource:
 
             return jsonify({
-                "message": "Invalid Resource"
+
+                "message":
+
+                "Invalid Resource"
+
             }), 400
 
-        po_date = datetime.strptime(
-            start_date,
-            "%Y-%m-%d"
-        ).date()
 
-        if po_date < resource["start_date"]:
+        if resource[
+
+            "resource_type"
+
+        ] != "C2C":
+
 
             return jsonify({
-                "message": "Supplier PO Start Date should be on or after Resource Start Date"
+
+                "message":
+
+                "Only C2C resources can be linked to Supplier PO"
+
             }), 400
 
+
+        po_date = datetime.strptime(
+
+            start_date,
+
+            "%Y-%m-%d"
+
+        ).date()
+
+
+        if resource[
+
+            "start_date"
+
+        ]:
+
+
+            if po_date < resource[
+
+                "start_date"
+
+            ]:
+
+
+                return jsonify({
+
+                    "message":
+
+                    "Supplier PO Start Date should be on or after Resource Start Date"
+
+                }), 400
+
+
+        # ======================================
+        # UPDATE
+        # ======================================
+
+
         query = """
+
             UPDATE supplier_po
+
             SET
+
                 supplier_msa_id=%s,
+
                 resource_id=%s,
+
                 po_number=%s,
+
                 project_name=%s,
+
                 start_date=%s,
+
                 end_date=%s,
+
                 amount=%s,
+
                 status=%s
+
             WHERE id=%s
+
         """
 
+
         cursor.execute(
+
             query,
+
             (
+
                 supplier_msa_id,
+
                 resource_id,
+
                 po_number,
+
                 project_name,
+
                 start_date,
+
                 end_date,
+
                 amount,
+
                 status,
+
                 id
+
             )
+
         )
+
 
         if cursor.rowcount == 0:
 
+
             return jsonify({
-                "message": "Supplier PO not found"
+
+                "message":
+
+                "Supplier PO not found"
+
             }), 404
+
 
         conn.commit()
 
+
         return jsonify({
-            "message": "Supplier PO Updated Successfully"
+
+            "message":
+
+            "Supplier PO Updated Successfully"
+
         }), 200
+
+
+    except Exception as e:
+
+
+        print(
+
+            "UPDATE SUPPLIER PO ERROR:",
+
+            str(e)
+
+        )
+
+
+        return jsonify({
+
+            "message":
+
+            str(e)
+
+        }), 500
+
 
     finally:
 
+
         if cursor:
+
             cursor.close()
 
+
         if conn:
+
             conn.close()
 
 
-@app.route('/supplier_po/<int:id>', methods=['DELETE'])
-def delete_supplier_po(id):
+
+# ==========================================
+# DELETE SUPPLIER PO
+# ==========================================
+
+
+@app.route(
+
+    '/supplier_po/<int:id>',
+
+    methods=['DELETE']
+
+)
+
+def delete_supplier_po(
+
+    id
+
+):
+
 
     conn = None
+
     cursor = None
+
 
     try:
 
+
         conn = get_connection()
+
+
         cursor = conn.cursor()
 
+
         cursor.execute(
+
             """
+
             DELETE FROM supplier_po
+
             WHERE id=%s
+
             """,
-            (id,)
+
+            (
+
+                id,
+
+            )
+
         )
+
 
         if cursor.rowcount == 0:
 
+
             return jsonify({
-                "message": "Supplier PO not found"
+
+                "message":
+
+                "Supplier PO not found"
+
             }), 404
+
 
         conn.commit()
 
+
         return jsonify({
-            "message": "Supplier PO Deleted Successfully"
+
+            "message":
+
+            "Supplier PO Deleted Successfully"
+
         }), 200
+
+
+    except Exception as e:
+
+
+        print(
+
+            "DELETE SUPPLIER PO ERROR:",
+
+            str(e)
+
+        )
+
+
+        return jsonify({
+
+            "message":
+
+            str(e)
+
+        }), 500
+
 
     finally:
 
+
         if cursor:
+
             cursor.close()
 
+
         if conn:
+
+            conn.close()
+
+@app.route(
+
+    '/supplier_po_resources',
+
+    methods=['GET']
+
+)
+
+def get_supplier_po_resources():
+
+
+    conn = None
+
+    cursor = None
+
+
+    try:
+
+
+        conn = get_connection()
+
+
+        cursor = conn.cursor(
+
+            dictionary=True
+
+        )
+
+
+        cursor.execute(
+
+            """
+
+            SELECT
+
+                resource_id,
+
+                employee_id,
+
+                first_name,
+
+                last_name,
+
+                resource_type,
+
+                start_date,
+
+                status
+
+            FROM resource
+
+            WHERE resource_type='C2C'
+
+            AND status='Active'
+
+            ORDER BY first_name
+
+            """
+
+        )
+
+
+        data = cursor.fetchall()
+
+
+        return jsonify(
+
+            data
+
+        ), 200
+
+
+    except Exception as e:
+
+
+        print(
+
+            "RESOURCE ERROR:",
+
+            str(e)
+
+        )
+
+
+        return jsonify({
+
+            "message":
+
+            str(e)
+
+        }), 500
+
+
+    finally:
+
+
+        if cursor:
+
+            cursor.close()
+
+
+        if conn:
+
             conn.close()
 
 @app.route("/resource_details_by_name/<resource_name>", methods=["GET"])
@@ -3111,14 +4015,17 @@ def submit_timesheet(id):
 
         }), 500
 		
-# ============================================================
 # HTML PAGES
-# ============================================================
 
 @app.route('/')
 def login_page():
 
     return render_template('login.html')
+
+@app.route("/dashboard_page")
+def dashboard_page():
+
+    return render_template("dashboard.html")
 
 
 @app.route('/companypage')
@@ -3166,6 +4073,7 @@ def timesheet_page():
     )
 
 
+
 # ============================================================
 # RUN APPLICATION
 # ============================================================
@@ -3173,5 +4081,7 @@ def timesheet_page():
 if __name__ == '__main__':
 
     app.run(
+        host="0.0.0.0",
+        port=5000,
         debug=True
     )
